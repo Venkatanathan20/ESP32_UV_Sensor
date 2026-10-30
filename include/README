@@ -1,0 +1,25 @@
+# ☀️ IoT Real-Time UV Radiation Monitoring & Hazard Alert System
+
+An end-to-end physical IoT environmental telemetry node built with an **ESP32-C3 SuperMini** and a **GUVA-S12SD** analog ultraviolet sensor. The system samples real-time solar UV intensity, displays local readouts on an **SSD1306 0.96" OLED**, streams live telemetry over **MQTT (HiveMQ)** and **HTTPS (InfluxDB Cloud)**, and visualizes health risks on a **Grafana Cloud** dashboard with automated **Telegram Bot** hazard alerts.
+
+---
+
+## 🏗️ System Architecture & Pipeline
+
+```text
+[GUVA-S12SD UV Sensor] ──(Analog ADC1)──> [ESP32-C3 SuperMini] ──(I2C)──> [0.96" SSD1306 OLED]
+                                                  │
+                              ┌───────────────────┴───────────────────┐
+                        (MQTT over TCP)                        (HTTPS Line Protocol)
+                              ▼                                       ▼
+                     [HiveMQ Cloud Broker]                     [InfluxDB Cloud]
+                   (Real-time JSON Telemetry)               (Time-Series Bucket)
+                                                                      │
+                                                                (Flux Queries)
+                                                                      ▼
+                                                           [Grafana Cloud Dashboard]
+                                                           ├── Live UV & Voltage Gauges
+                                                           ├── WHO UV Health Risk Card
+                                                           ├── 7-Day Peak Bar Charts
+                                                           ├── Wi-Fi RSSI & Battery Health
+                                                           └── [Telegram Bot Alerting (>11 mW/cm²)]
